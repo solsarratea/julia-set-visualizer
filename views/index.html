@@ -10,7 +10,31 @@
 		canvas { display: block; }
 	</style>
 	</head>
-	<body>
+	<body>  
+		  <script id="fragmentShader" type="x-shader/x-fragment">
+			uniform vec2 resolution;
+			
+			void main() {
+			vec2 uv = gl_FragCoord.xy - resolution.xy * 0.5;
+			uv *= 5.5 / min( resolution.x, resolution.y );
+		
+			vec2 c = vec2( 0.285, 0.01 );
+			vec2 v = uv;
+			float scale = 0.01;
+
+			int count = 255;
+
+			for ( int i = 0 ; i < 255; i++ ) {
+				v = c + vec2(v.x * v.x - v.y * v.y, v.x * v.y * 2.0);
+				if ( dot( v, v ) > 4.0 ) {
+					count = i;
+					break;
+				}
+			}
+				
+			gl_FragColor = vec4( float( count ) * scale);
+			} 
+		</script>
 		<script src="/plane.js"></script>
 	</body>
 </html>
