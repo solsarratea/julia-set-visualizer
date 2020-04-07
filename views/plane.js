@@ -19,6 +19,45 @@ var uniforms = {
 }
 
 
+function vertexShader() {
+  return `
+    varying vec2 vUv;
+
+    void main()
+    {
+      vUv = uv;
+      vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );
+      gl_Position = projectionMatrix * mvPosition;
+    }
+  `
+}
+
+function fragmentShader() {
+  return `
+      uniform float time;
+      varying vec2 vUv;
+
+      void main() {
+        vec2 c = vec2( 0.285, 0.01 + sin(time) );
+        vec2 v = vUv;
+        float scale = 0.01;
+
+        int count = 255;
+
+        for ( int i = 0 ; i < 255; i++ ) {
+          v = c + vec2(v.x * v.x - v.y * v.y, v.x * v.y * 2.0);
+          if ( dot( v, v ) > 4.0 ) {
+            count = i;
+            break;
+          }
+        }
+          
+        gl_FragColor = vec4( float( count ) * scale);
+      }
+  `
+}
+
+
 var geometry = new THREE.PlaneBufferGeometry( 4, 4, 2,2);
 
   material = new THREE.ShaderMaterial( {
@@ -26,8 +65,8 @@ var geometry = new THREE.PlaneBufferGeometry( 4, 4, 2,2);
       "time": { value: 0.0 },
       "resolution": { type: "v2", value: new THREE.Vector2() }
     },
-    vertexShader: document.getElementById( 'vertexShader' ).textContent,
-    fragmentShader: document.getElementById( 'fragmentShader' ).textContent,
+    fragmentShader: fragmentShader(), //document.getElementById( 'fragmentShader' ).textContent,
+    vertexShader: vertexShader(), //document.getElementById( 'vertexShader' ).textContent,
 
   } );
 
@@ -53,8 +92,9 @@ function animate() {
     renderer.render(scene, camera);
     requestAnimationFrame(animate);
 
-    var time = performance.now() * 0.00005;
+    var time = performance.now() * 0.0005;
     material.uniforms[ "time" ].value = time;
+//    plane.rotation.x += .005;
   
   } 
 

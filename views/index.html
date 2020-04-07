@@ -10,7 +10,17 @@
 		canvas { display: block; }
 	</style>
 	</head>
-	<body>  
+	<body> 
+		  <script id="vertexShader" type="x-shader/x-fragment">
+			varying vec3 vUv; 
+
+			void main() {
+			vUv = position; 
+			vec4 modelViewPosition = modelViewMatrix * vec4(position, 1.0);
+			gl_Position = projectionMatrix * modelViewPosition; 
+
+			}			
+		 </script>
 		  <script id="fragmentShader" type="x-shader/x-fragment">
 			uniform vec2 resolution;
 			
@@ -19,7 +29,7 @@
 			uv *= 5.5 / min( resolution.x, resolution.y );
 		
 			vec2 c = vec2( 0.285, 0.01 );
-			vec2 v = uv;
+			vec2 v = vUv;
 			float scale = 0.01;
 
 			int count = 255;
