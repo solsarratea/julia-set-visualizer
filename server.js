@@ -10,3 +10,7 @@ app.use(express.static(__dirname +'/node_modules/dat.gui/build'))
 var listener = app.listen(8080, function () {
   console.log('Your app is listening on port ' + listener.address().port);
 });
+
+app.get("/3d", (request, response) => {
+  response.sendFile(__dirname + "/views/julia-3d.html");
+});
